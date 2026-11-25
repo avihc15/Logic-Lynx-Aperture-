@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aperture</string>
+    <string name="inicio_titulo">APERTURE</string>
+    <string name="inicio_subtitulo">Sistema de gestión de cine</string>
+    <string name="inicio_bienvenida">Bienvenido</string>
+    <string name="inicio_instruccion">Selecciona el módulo que deseas utilizar</string>
+
+    <string name="modulo_taquilla">Taquilla</string>
+    <string name="modulo_promocion">Promoción</string>
+    <string name="modulo_dulceria">Dulcería</string>
+    <string name="modulo_funcion">Función</string>
+
+    <string name="accion_registrar">Registrar</string>
+    <string name="accion_consultar">Consultar</string>
+    <string name="accion_regresar">Regresar al menú</string>
+</resources>

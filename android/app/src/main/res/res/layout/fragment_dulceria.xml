@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Punto de venta - Dulcería"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sucursal" />
+        <Spinner
+            android:id="@+id/spDulceriaSucursal"
+            android:layout_width="match_parent"
+            android:layout_height="48dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Producto" />
+        <Spinner
+            android:id="@+id/spDulceriaProducto"
+            android:layout_width="match_parent"
+            android:layout_height="48dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Combo" />
+        <Spinner
+            android:id="@+id/spDulceriaCombo"
+            android:layout_width="match_parent"
+            android:layout_height="48dp" />
+
+        <EditText
+            android:id="@+id/etDulceriaCantidad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Cantidad"
+            android:inputType="number"
+            android:text="1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/btnVenderProducto"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Agregar producto" />
+            <Button
+                android:id="@+id/btnVenderCombo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Agregar combo" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Inventario disponible"
+            android:textStyle="bold"
+            android:paddingTop="8dp" />
+        <ListView
+            android:id="@+id/lvDulceriaCatalogo"
+            android:layout_width="match_parent"
+            android:layout_height="110dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Carrito de venta"
+            android:textStyle="bold"
+            android:paddingTop="8dp" />
+        <ListView
+            android:id="@+id/lvCarritoDulceria"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:choiceMode="singleChoice" />
+
+        <Button
+            android:id="@+id/btnQuitarCarrito"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Quitar artículo seleccionado" />
+        <TextView
+            android:id="@+id/tvTotalCarrito"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Total: $0.00"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:padding="8dp" />
+        <Button
+            android:id="@+id/btnRegistrarVentaDulceria"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Registrar venta" />
+    </LinearLayout>
+</ScrollView>

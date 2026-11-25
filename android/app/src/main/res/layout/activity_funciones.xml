@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/aperture_background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PROGRAMACIÓN DE FUNCIONES"
+            android:textColor="@color/aperture_text"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:paddingBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sucursal"
+            android:textColor="@color/aperture_text" />
+
+        <Spinner
+            android:id="@+id/spSucursal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/aperture_primary"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cartelera"
+            android:textColor="@color/aperture_text"
+            android:layout_marginTop="8dp" />
+
+        <Spinner
+            android:id="@+id/spCartelera"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Película"
+            android:textColor="@color/aperture_text"
+            android:layout_marginTop="8dp" />
+
+        <Spinner
+            android:id="@+id/spPelicula"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sala"
+            android:textColor="@color/aperture_text"
+            android:layout_marginTop="8dp" />
+
+        <Spinner
+            android:id="@+id/spSala"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fecha y hora (AAAA-MM-DD HH:MM:SS)"
+            android:textColor="@color/aperture_text"
+            android:layout_marginTop="8dp" />
+
+        <EditText
+            android:id="@+id/etFechaHora"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="2026-11-25 18:30:00"
+            android:inputType="text"
+            android:textColor="@color/aperture_text"
+            android:textColorHint="@color/aperture_text_secondary"
+            android:backgroundTint="@color/aperture_primary" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Idioma"
+            android:textColor="@color/aperture_text"
+            android:layout_marginTop="8dp" />
+
+        <EditText
+            android:id="@+id/etIdioma"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Español"
+            android:inputType="textCapSentences"
+            android:textColor="@color/aperture_text"
+            android:textColorHint="@color/aperture_text_secondary"
+            android:backgroundTint="@color/aperture_primary" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Formato"
+            android:textColor="@color/aperture_text"
+            android:layout_marginTop="8dp" />
+
+        <Spinner
+            android:id="@+id/spFormato"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <Button
+                android:id="@+id/btnGuardarFuncion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Guardar"
+                android:backgroundTint="@color/aperture_primary" />
+
+            <Button
+                android:id="@+id/btnModificarFuncion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Modificar"
+                android:layout_marginStart="6dp"
+                android:backgroundTint="@color/aperture_primary" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnCancelarFuncion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Cancelar función"
+                android:backgroundTint="#B23A48" />
+
+            <Button
+                android:id="@+id/btnLimpiarFuncion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Limpiar"
+                android:layout_marginStart="6dp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Funciones registradas"
+            android:textColor="@color/aperture_text"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp"
+            android:paddingBottom="8dp" />
+
+        <ListView
+            android:id="@+id/lvFunciones"
+            android:layout_width="match_parent"
+            android:layout_height="320dp"
+            android:background="@drawable/bg_aperture_panel"
+            android:divider="#B62906"
+            android:dividerHeight="1dp"
+            android:padding="6dp" />
+
+        <Button
+            android:id="@+id/btnRegresarFunciones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Regresar"
+            android:layout_marginTop="12dp" />
+
+    </LinearLayout>
+</ScrollView>
