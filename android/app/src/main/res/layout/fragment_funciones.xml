@@ -56,11 +56,29 @@
         android:hint="Fecha y Hora (ej. 2026-11-20 18:30)"
         android:inputType="text" />
 
-    <Button
-        android:id="@+id/btnGuardarFuncion"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Guardar Función" />
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/btnGuardarFuncion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Guardar" />
+        <Button
+            android:id="@+id/btnModificarFuncion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Modificar" />
+        <Button
+            android:id="@+id/btnLimpiarFuncion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Limpiar" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/lvFunciones"

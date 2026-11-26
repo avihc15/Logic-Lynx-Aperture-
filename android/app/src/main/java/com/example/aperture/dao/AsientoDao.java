@@ -19,8 +19,8 @@ public class AsientoDao {
         ContentValues values = new ContentValues();
         values.put("id_sala", asiento.getIdSala());
         values.put("fila", asiento.getFila());
-        values.put("numero", asiento.getNumero());
-        values.put("tipo", asiento.getTipo());
+        values.put("numero_asiento", asiento.getNumero());
+        values.put("activo", 1);
         return db.insertWithOnConflict("asientos", null, values, SQLiteDatabase.CONFLICT_IGNORE);
     }
 
@@ -28,15 +28,15 @@ public class AsientoDao {
         ArrayList<Asiento> lista = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         try (Cursor cursor = db.rawQuery(
-                "SELECT * FROM asientos WHERE id_sala = ? ORDER BY fila, numero",
+                "SELECT id_asiento, id_sala, fila, numero_asiento FROM asientos WHERE id_sala = ? AND activo = 1 ORDER BY fila, numero_asiento",
                 new String[]{String.valueOf(idSala)})) {
             while (cursor.moveToNext()) {
                 lista.add(new Asiento(
-                        cursor.getInt(cursor.getColumnIndexOrThrow("id_asiento")),
-                        cursor.getInt(cursor.getColumnIndexOrThrow("id_sala")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("fila")),
-                        cursor.getInt(cursor.getColumnIndexOrThrow("numero")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("tipo"))
+                        cursor.getInt(0),
+                        cursor.getInt(1),
+                        cursor.getString(2),
+                        cursor.getInt(3),
+                        "ESTANDAR"
                 ));
             }
         }

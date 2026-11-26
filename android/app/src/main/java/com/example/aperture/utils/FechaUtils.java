@@ -5,8 +5,9 @@ import java.util.Date;
 import java.util.Locale;
 
 public class FechaUtils {
+
     public static String obtenerFechaHoraActual() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         return sdf.format(new Date());
     }
 

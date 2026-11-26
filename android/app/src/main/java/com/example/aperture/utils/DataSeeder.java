@@ -4,6 +4,7 @@ import com.example.aperture.dao.AsientoDao;
 import com.example.aperture.dao.CarteleraDao;
 import com.example.aperture.dao.ComboDao;
 import com.example.aperture.dao.ExistenciaDao;
+import com.example.aperture.dao.FuncionDao;
 import com.example.aperture.dao.PeliculaDao;
 import com.example.aperture.dao.ProductoDao;
 import com.example.aperture.dao.PromocionDao;
@@ -15,12 +16,17 @@ import com.example.aperture.model.Asiento;
 import com.example.aperture.model.Cartelera;
 import com.example.aperture.model.Combo;
 import com.example.aperture.model.Existencia;
+import com.example.aperture.model.Funcion;
 import com.example.aperture.model.Pelicula;
 import com.example.aperture.model.Producto;
 import com.example.aperture.model.Promocion;
 import com.example.aperture.model.Sala;
 import com.example.aperture.model.Sucursal;
 import com.example.aperture.model.TarifaBoleto;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class DataSeeder {
 
@@ -63,6 +69,23 @@ public class DataSeeder {
         carteleraDao.asociarPelicula((int) idCart2, (int) idPel1);
         carteleraDao.asociarPelicula((int) idCart2, (int) idPel3);
 
+        Calendar calendario = Calendar.getInstance();
+        calendario.add(Calendar.DAY_OF_MONTH, 1);
+        calendario.set(Calendar.HOUR_OF_DAY, 18);
+        calendario.set(Calendar.MINUTE, 30);
+        calendario.set(Calendar.SECOND, 0);
+        SimpleDateFormat fechaFuncion = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+        String manana18 = fechaFuncion.format(calendario.getTime());
+        calendario.add(Calendar.HOUR_OF_DAY, 2);
+        String manana20 = fechaFuncion.format(calendario.getTime());
+        FuncionDao funcionDao = new FuncionDao(dbHelper);
+        funcionDao.insertar(new Funcion(0, (int) idCart1, (int) idPel1, (int) idSala1,
+                manana18, "Español", "2D", "Programada"));
+        funcionDao.insertar(new Funcion(0, (int) idCart1, (int) idPel2, (int) idSala2,
+                manana20, "Subtitulada", "3D", "Programada"));
+        funcionDao.insertar(new Funcion(0, (int) idCart2, (int) idPel3, (int) idSala3,
+                manana18, "Español", "IMAX", "Programada"));
+
         TarifaBoletoDao tarifaDao = new TarifaBoletoDao(dbHelper);
         tarifaDao.insertar(new TarifaBoleto(0, "Adulto General", 85.0, "Boleto estándar adulto", true));
         tarifaDao.insertar(new TarifaBoleto(0, "Niño / Tercera Edad", 65.0, "Tarifa preferencial", true));
@@ -86,5 +109,8 @@ public class DataSeeder {
         existenciaDao.insertar(new Existencia(0, (int) idSuc1, (int) idProd1, 100));
         existenciaDao.insertar(new Existencia(0, (int) idSuc1, (int) idProd2, 100));
         existenciaDao.insertar(new Existencia(0, (int) idSuc1, (int) idProd3, 50));
+        existenciaDao.insertar(new Existencia(0, (int) idSuc2, (int) idProd1, 80));
+        existenciaDao.insertar(new Existencia(0, (int) idSuc2, (int) idProd2, 80));
+        existenciaDao.insertar(new Existencia(0, (int) idSuc2, (int) idProd3, 40));
     }
 }

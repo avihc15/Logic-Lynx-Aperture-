@@ -17,66 +17,47 @@ public class ProductoDao {
     public long insertar(Producto producto) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("nombre", producto.getNombre());
+        values.put("nombre_producto", producto.getNombre());
         values.put("descripcion", producto.getDescripcion());
-        values.put("precio", producto.getPrecio());
+        values.put("categoria", "GENERAL");
         values.put("activo", producto.isActivo() ? 1 : 0);
-        return db.insert("productos", null, values);
+        long id = db.insert("productos", null, values);
+        if (id > 0) {
+            ContentValues precio = new ContentValues();
+            precio.put("id_sucursal", 1);
+            precio.put("id_producto", id);
+            precio.put("precio", producto.getPrecio());
+            precio.put("fecha_inicio", "2026-01-01");
+            db.insert("precios_dulceria", null, precio);
+        }
+        return id;
     }
 
     public ArrayList<Producto> obtenerTodos() {
-        return consultar("SELECT * FROM productos ORDER BY nombre", null);
+        return consultar(
+                "SELECT p.id_producto, p.nombre_producto, p.descripcion, COALESCE(pd.precio, 0) AS precio, p.activo " +
+                "FROM productos p LEFT JOIN precios_dulceria pd ON pd.id_producto = p.id_producto AND pd.fecha_fin IS NULL " +
+                "ORDER BY p.nombre_producto", null);
     }
 
     public ArrayList<Producto> obtenerActivos() {
-        return consultar("SELECT * FROM productos WHERE activo = 1 ORDER BY nombre", null);
+        return consultar(
+                "SELECT p.id_producto, p.nombre_producto, p.descripcion, COALESCE(pd.precio, 0) AS precio, p.activo " +
+                "FROM productos p LEFT JOIN precios_dulceria pd ON pd.id_producto = p.id_producto AND pd.fecha_fin IS NULL " +
+                "WHERE p.activo = 1 ORDER BY p.nombre_producto", null);
     }
 
-    public Producto obtenerPorId(int id) {
-        ArrayList<Producto> lista = consultar(
-                "SELECT * FROM productos WHERE id_producto = ?",
-                new String[]{String.valueOf(id)}
-        );
-        return lista.isEmpty() ? null : lista.get(0);
-    }
-
-    public int actualizar(Producto producto) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("nombre", producto.getNombre());
-        values.put("descripcion", producto.getDescripcion());
-        values.put("precio", producto.getPrecio());
-        return db.update(
-                "productos",
-                values,
-                "id_producto = ?",
-                new String[]{String.valueOf(producto.getIdProducto())}
-        );
-    }
-
-    public int cambiarEstado(int id, boolean activo) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("activo", activo ? 1 : 0);
-        return db.update(
-                "productos",
-                values,
-                "id_producto = ?",
-                new String[]{String.valueOf(id)}
-        );
-    }
-
-    private ArrayList<Producto> consultar(String sql, String[] argumentos) {
+    private ArrayList<Producto> consultar(String sql, String[] args) {
         ArrayList<Producto> lista = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        try (Cursor cursor = db.rawQuery(sql, argumentos)) {
+        try (Cursor cursor = db.rawQuery(sql, args)) {
             while (cursor.moveToNext()) {
                 lista.add(new Producto(
-                        cursor.getInt(cursor.getColumnIndexOrThrow("id_producto")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("nombre")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("descripcion")),
-                        cursor.getDouble(cursor.getColumnIndexOrThrow("precio")),
-                        cursor.getInt(cursor.getColumnIndexOrThrow("activo")) == 1
+                        cursor.getInt(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getDouble(3),
+                        cursor.getInt(4) == 1
                 ));
             }
         }

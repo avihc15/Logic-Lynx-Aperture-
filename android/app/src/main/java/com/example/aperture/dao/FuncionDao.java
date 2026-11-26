@@ -20,58 +20,35 @@ public class FuncionDao {
         values.put("id_cartelera", funcion.getIdCartelera());
         values.put("id_pelicula", funcion.getIdPelicula());
         values.put("id_sala", funcion.getIdSala());
-        values.put("fecha_hora", funcion.getFechaHora());
-        values.put("idioma", funcion.getIdioma());
-        values.put("formato", funcion.getFormato());
-        values.put("estado", funcion.getEstado());
+        String inicio = funcion.getFechaHora();
+        if (inicio.length() == 16) inicio = inicio + ":00";
+        values.put("fecha_inicio", inicio);
+        values.put("fecha_fin", calcularFechaFin(inicio));
+        values.put("estado", funcion.getEstado().toUpperCase());
         return db.insert("funciones_cine", null, values);
     }
 
+    private String calcularFechaFin(String fechaInicio) {
+        try {
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault());
+            java.util.Date d = sdf.parse(fechaInicio);
+            if (d != null) {
+                return sdf.format(new java.util.Date(d.getTime() + 135L * 60L * 1000L));
+            }
+        } catch (Exception ignored) {}
+        return fechaInicio;
+    }
+
     public ArrayList<Funcion> obtenerTodas() {
-        return consultar(
-                "SELECT * FROM funciones_cine ORDER BY fecha_hora",
-                null
-        );
+        return consultar("SELECT * FROM funciones_cine ORDER BY fecha_inicio", null);
     }
 
     public ArrayList<Funcion> obtenerProgramadas() {
-        return consultar(
-                "SELECT * FROM funciones_cine " +
-                "WHERE estado = 'Programada' " +
-                "ORDER BY fecha_hora",
-                null
-        );
-    }
-
-    public ArrayList<Funcion> obtenerPorFecha(String fecha) {
-        return consultar(
-                "SELECT * FROM funciones_cine " +
-                "WHERE fecha_hora LIKE ? ORDER BY fecha_hora",
-                new String[]{fecha + "%"}
-        );
-    }
-
-    public ArrayList<Funcion> obtenerPorCartelera(int idCartelera) {
-        return consultar(
-                "SELECT * FROM funciones_cine " +
-                "WHERE id_cartelera = ? ORDER BY fecha_hora",
-                new String[]{String.valueOf(idCartelera)}
-        );
-    }
-
-    public ArrayList<Funcion> obtenerPorSala(int idSala) {
-        return consultar(
-                "SELECT * FROM funciones_cine " +
-                "WHERE id_sala = ? ORDER BY fecha_hora",
-                new String[]{String.valueOf(idSala)}
-        );
+        return consultar("SELECT * FROM funciones_cine WHERE UPPER(estado) = 'PROGRAMADA' ORDER BY fecha_inicio", null);
     }
 
     public Funcion obtenerPorId(int idFuncion) {
-        ArrayList<Funcion> lista = consultar(
-                "SELECT * FROM funciones_cine WHERE id_funcion = ?",
-                new String[]{String.valueOf(idFuncion)}
-        );
+        ArrayList<Funcion> lista = consultar("SELECT * FROM funciones_cine WHERE id_funcion = ?", new String[]{String.valueOf(idFuncion)});
         return lista.isEmpty() ? null : lista.get(0);
     }
 
@@ -81,43 +58,34 @@ public class FuncionDao {
         values.put("id_cartelera", funcion.getIdCartelera());
         values.put("id_pelicula", funcion.getIdPelicula());
         values.put("id_sala", funcion.getIdSala());
-        values.put("fecha_hora", funcion.getFechaHora());
-        values.put("idioma", funcion.getIdioma());
-        values.put("formato", funcion.getFormato());
-        values.put("estado", funcion.getEstado());
-        return db.update(
-                "funciones_cine",
-                values,
-                "id_funcion = ?",
-                new String[]{String.valueOf(funcion.getIdFuncion())}
-        );
+        String inicio = funcion.getFechaHora();
+        if (inicio.length() == 16) inicio = inicio + ":00";
+        values.put("fecha_inicio", inicio);
+        values.put("fecha_fin", calcularFechaFin(inicio));
+        values.put("estado", funcion.getEstado().toUpperCase());
+        return db.update("funciones_cine", values, "id_funcion = ?", new String[]{String.valueOf(funcion.getIdFuncion())});
     }
 
     public int cambiarEstado(int idFuncion, String estado) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("estado", estado);
-        return db.update(
-                "funciones_cine",
-                values,
-                "id_funcion = ?",
-                new String[]{String.valueOf(idFuncion)}
-        );
+        values.put("estado", estado.toUpperCase());
+        return db.update("funciones_cine", values, "id_funcion = ?", new String[]{String.valueOf(idFuncion)});
     }
 
-    private ArrayList<Funcion> consultar(String sql, String[] argumentos) {
+    private ArrayList<Funcion> consultar(String sql, String[] args) {
         ArrayList<Funcion> lista = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        try (Cursor cursor = db.rawQuery(sql, argumentos)) {
+        try (Cursor cursor = db.rawQuery(sql, args)) {
             while (cursor.moveToNext()) {
                 lista.add(new Funcion(
                         cursor.getInt(cursor.getColumnIndexOrThrow("id_funcion")),
                         cursor.getInt(cursor.getColumnIndexOrThrow("id_cartelera")),
                         cursor.getInt(cursor.getColumnIndexOrThrow("id_pelicula")),
                         cursor.getInt(cursor.getColumnIndexOrThrow("id_sala")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("fecha_hora")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("idioma")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("formato")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("fecha_inicio")),
+                        "Español",
+                        "2D",
                         cursor.getString(cursor.getColumnIndexOrThrow("estado"))
                 ));
             }

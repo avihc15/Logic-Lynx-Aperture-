@@ -2,11 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.aperture">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+        android:usesCleartextTraffic="true"
+        android:theme="@style/Theme.AppCompat">
 
         <activity
             android:name=".MainActivity"
@@ -19,18 +23,6 @@
 
         <activity
             android:name=".ui.ModuloActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.funciones.FuncionesActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.promociones.PromocionesActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.taquilla.TaquillaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.dulceria.DulceriaActivity"
             android:exported="false" />
 
     </application>

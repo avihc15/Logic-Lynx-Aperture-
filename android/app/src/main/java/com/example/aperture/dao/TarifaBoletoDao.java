@@ -17,65 +17,32 @@ public class TarifaBoletoDao {
     public long insertar(TarifaBoleto tarifa) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("nombre", tarifa.getNombre());
-        values.put("precio", tarifa.getPrecio());
-        values.put("descripcion", tarifa.getDescripcion());
+        values.put("id_sucursal", 1);
+        values.put("nombre_precio", tarifa.getNombre());
+        values.put("cantidad", tarifa.getPrecio());
+        values.put("fecha_inicio", "2026-01-01");
         values.put("activo", tarifa.isActivo() ? 1 : 0);
         return db.insert("precios_boletos", null, values);
     }
 
     public ArrayList<TarifaBoleto> obtenerTodas() {
-        return consultar("SELECT * FROM precios_boletos ORDER BY nombre", null);
+        return consultar("SELECT * FROM precios_boletos ORDER BY nombre_precio", null);
     }
 
     public ArrayList<TarifaBoleto> obtenerActivas() {
-        return consultar("SELECT * FROM precios_boletos WHERE activo = 1 ORDER BY nombre", null);
+        return consultar("SELECT * FROM precios_boletos WHERE activo = 1 ORDER BY id_precio_boleto", null);
     }
 
-    public TarifaBoleto obtenerPorId(int id) {
-        ArrayList<TarifaBoleto> lista = consultar(
-                "SELECT * FROM precios_boletos WHERE id_tarifa = ?",
-                new String[]{String.valueOf(id)}
-        );
-        return lista.isEmpty() ? null : lista.get(0);
-    }
-
-    public int actualizar(TarifaBoleto tarifa) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("nombre", tarifa.getNombre());
-        values.put("precio", tarifa.getPrecio());
-        values.put("descripcion", tarifa.getDescripcion());
-        return db.update(
-                "precios_boletos",
-                values,
-                "id_tarifa = ?",
-                new String[]{String.valueOf(tarifa.getIdTarifa())}
-        );
-    }
-
-    public int cambiarEstado(int id, boolean activo) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("activo", activo ? 1 : 0);
-        return db.update(
-                "precios_boletos",
-                values,
-                "id_tarifa = ?",
-                new String[]{String.valueOf(id)}
-        );
-    }
-
-    private ArrayList<TarifaBoleto> consultar(String sql, String[] argumentos) {
+    private ArrayList<TarifaBoleto> consultar(String sql, String[] args) {
         ArrayList<TarifaBoleto> lista = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        try (Cursor cursor = db.rawQuery(sql, argumentos)) {
+        try (Cursor cursor = db.rawQuery(sql, args)) {
             while (cursor.moveToNext()) {
                 lista.add(new TarifaBoleto(
-                        cursor.getInt(cursor.getColumnIndexOrThrow("id_tarifa")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("nombre")),
-                        cursor.getDouble(cursor.getColumnIndexOrThrow("precio")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("descripcion")),
+                        cursor.getInt(cursor.getColumnIndexOrThrow("id_precio_boleto")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("nombre_precio")),
+                        cursor.getDouble(cursor.getColumnIndexOrThrow("cantidad")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("nombre_precio")),
                         cursor.getInt(cursor.getColumnIndexOrThrow("activo")) == 1
                 ));
             }

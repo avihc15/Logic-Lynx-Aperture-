@@ -48,6 +48,9 @@
           <li class="nav-item">
             <a class="nav-link" href="#promociones">Promociones</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link text-warning fw-bold" href="#admin-catalogos">Admin Catálogos (ABC)</a>
+          </li>
         </ul>
       </div>
 
@@ -308,6 +311,175 @@
         </div>
     </section>
     
+    
+    <!-- PANEL DE ADMINISTRACION DE LOS 5 CATALOGOS (ABC) CONECTADO A SPRING BOOT + MYSQL -->
+    <section class="py-5 bg-dark text-white" id="admin-catalogos">
+      <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+          <div>
+            <p class="texto-pequeno mb-1">PANEL DE CONTROL · AZURE REST API</p>
+            <h2 class="fw-bold">Administración de Catálogos <span>(ABC)</span></h2>
+          </div>
+          <div class="d-flex gap-2 align-items-center mt-2 mt-md-0">
+            <label for="apiBaseInput" class="small text-secondary mb-0">API Spring Boot:</label>
+            <input type="text" id="apiBaseInput" class="form-control form-control-sm bg-secondary text-white border-0"
+                   style="width: 260px;" value="http://localhost:8080/api">
+            <button class="btn btn-sm btn-warning fw-bold" onclick="recargarTodo()">Conectar</button>
+          </div>
+        </div>
+
+        <div id="alertaApi" class="alert alert-info py-2 small" role="alert">
+          Conectado al backend REST. Selecciona un catálogo para realizar Consultas, Altas, Cambios y Bajas.
+        </div>
+
+        <!-- Menú de navegación de los 5 catálogos -->
+        <ul class="nav nav-pills mb-4 gap-2" id="tabsCatalogos" role="tablist">
+          <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#cat-peliculas" type="button">1. Películas</button></li>
+          <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#cat-salas" type="button">2. Salas</button></li>
+          <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#cat-funciones" type="button">3. Funciones</button></li>
+          <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#cat-promociones" type="button">4. Promociones</button></li>
+          <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#cat-productos" type="button">5. Productos</button></li>
+          <li class="nav-item"><button class="nav-link text-warning" data-bs-toggle="pill" data-bs-target="#cat-ventas" type="button">Ventas en Vivo (Web/Android)</button></li>
+        </ul>
+
+        <div class="tab-content bg-secondary bg-opacity-10 p-4 rounded border border-secondary">
+          <!-- 1. PELICULAS -->
+          <div class="tab-pane fade show active" id="cat-peliculas">
+            <h4 class="mb-3">Catálogo 1: Películas</h4>
+            <form id="formPelicula" class="row g-2 mb-3">
+              <input type="hidden" id="pelId">
+              <div class="col-md-3"><input type="text" id="pelTitulo" class="form-control form-control-sm" placeholder="Título" required></div>
+              <div class="col-md-2"><input type="number" id="pelDuracion" class="form-control form-control-sm" placeholder="Duración (min)" required></div>
+              <div class="col-md-2"><input type="text" id="pelClasif" class="form-control form-control-sm" placeholder="Clasificación (B)" required></div>
+              <div class="col-md-2"><input type="text" id="pelGenero" class="form-control form-control-sm" placeholder="Género"></div>
+              <div class="col-md-3 d-flex gap-1">
+                <button type="submit" class="btn btn-sm btn-success w-100">Guardar / Actualizar</button>
+                <button type="button" class="btn btn-sm btn-outline-light" onclick="limpiarPelicula()">Limpiar</button>
+              </div>
+            </form>
+            <div class="table-responsive">
+              <table class="table table-dark table-striped table-sm align-middle">
+                <thead><tr><th>ID</th><th>Título</th><th>Duración</th><th>Clasif.</th><th>Género</th><th>Acciones</th></tr></thead>
+                <tbody id="tbodyPeliculas"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 2. SALAS -->
+          <div class="tab-pane fade" id="cat-salas">
+            <h4 class="mb-3">Catálogo 2: Salas</h4>
+            <form id="formSala" class="row g-2 mb-3">
+              <input type="hidden" id="salaId">
+              <div class="col-md-3"><input type="text" id="salaNombre" class="form-control form-control-sm" placeholder="Nombre de sala" required></div>
+              <div class="col-md-3"><input type="number" id="salaCapacidad" class="form-control form-control-sm" placeholder="Capacidad" required></div>
+              <div class="col-md-3">
+                <select id="salaTipo" class="form-select form-select-sm">
+                  <option value="ESTANDAR">ESTANDAR</option>
+                  <option value="VIP">VIP</option>
+                  <option value="IMAX">IMAX</option>
+                </select>
+              </div>
+              <div class="col-md-3 d-flex gap-1">
+                <button type="submit" class="btn btn-sm btn-success w-100">Guardar / Actualizar</button>
+                <button type="button" class="btn btn-sm btn-outline-light" onclick="limpiarSala()">Limpiar</button>
+              </div>
+            </form>
+            <div class="table-responsive">
+              <table class="table table-dark table-striped table-sm align-middle">
+                <thead><tr><th>ID</th><th>Sucursal</th><th>Nombre</th><th>Capacidad</th><th>Tipo</th><th>Acciones</th></tr></thead>
+                <tbody id="tbodySalas"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 3. FUNCIONES -->
+          <div class="tab-pane fade" id="cat-funciones">
+            <h4 class="mb-3">Catálogo 3: Funciones</h4>
+            <form id="formFuncion" class="row g-2 mb-3">
+              <input type="hidden" id="funId">
+              <div class="col-md-2"><input type="number" id="funCartelera" class="form-control form-control-sm" value="8" placeholder="ID Cartelera" required></div>
+              <div class="col-md-2"><input type="number" id="funPelicula" class="form-control form-control-sm" placeholder="ID Película" required></div>
+              <div class="col-md-2"><input type="number" id="funSala" class="form-control form-control-sm" placeholder="ID Sala" required></div>
+              <div class="col-md-3"><input type="text" id="funFecha" class="form-control form-control-sm" placeholder="2026-11-28 18:00:00" required></div>
+              <div class="col-md-3 d-flex gap-1">
+                <button type="submit" class="btn btn-sm btn-success w-100">Guardar / Actualizar</button>
+                <button type="button" class="btn btn-sm btn-outline-light" onclick="limpiarFuncion()">Limpiar</button>
+              </div>
+            </form>
+            <div class="table-responsive">
+              <table class="table table-dark table-striped table-sm align-middle">
+                <thead><tr><th>ID</th><th>Película</th><th>Sala</th><th>Inicio</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody id="tbodyFunciones"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 4. PROMOCIONES -->
+          <div class="tab-pane fade" id="cat-promociones">
+            <h4 class="mb-3">Catálogo 4: Promociones</h4>
+            <form id="formPromocion" class="row g-2 mb-3">
+              <input type="hidden" id="promoId">
+              <div class="col-md-3"><input type="text" id="promoNombre" class="form-control form-control-sm" placeholder="Nombre promoción" required></div>
+              <div class="col-md-2">
+                <select id="promoTipo" class="form-select form-select-sm">
+                  <option value="PORCENTAJE">PORCENTAJE</option>
+                  <option value="CANTIDAD_FIJA">CANTIDAD_FIJA</option>
+                </select>
+              </div>
+              <div class="col-md-2"><input type="number" step="0.01" id="promoValor" class="form-control form-control-sm" placeholder="Valor" required></div>
+              <div class="col-md-2"><input type="date" id="promoInicio" class="form-control form-control-sm" required></div>
+              <div class="col-md-3 d-flex gap-1">
+                <input type="date" id="promoFin" class="form-control form-control-sm" required>
+                <button type="submit" class="btn btn-sm btn-success">Guardar</button>
+              </div>
+            </form>
+            <div class="table-responsive">
+              <table class="table table-dark table-striped table-sm align-middle">
+                <thead><tr><th>ID</th><th>Nombre</th><th>Tipo</th><th>Valor</th><th>Vigencia</th><th>Acciones</th></tr></thead>
+                <tbody id="tbodyPromociones"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 5. PRODUCTOS -->
+          <div class="tab-pane fade" id="cat-productos">
+            <h4 class="mb-3">Catálogo 5: Productos de Dulcería</h4>
+            <form id="formProducto" class="row g-2 mb-3">
+              <input type="hidden" id="prodId">
+              <div class="col-md-3"><input type="text" id="prodNombre" class="form-control form-control-sm" placeholder="Nombre producto" required></div>
+              <div class="col-md-3"><input type="text" id="prodCategoria" class="form-control form-control-sm" placeholder="Categoría (BOTANAS)" required></div>
+              <div class="col-md-2"><input type="number" step="0.01" id="prodPrecio" class="form-control form-control-sm" placeholder="Precio $" required></div>
+              <div class="col-md-1"><input type="number" id="prodStock" class="form-control form-control-sm" value="50" placeholder="Stock"></div>
+              <div class="col-md-3 d-flex gap-1">
+                <button type="submit" class="btn btn-sm btn-success w-100">Guardar / Actualizar</button>
+                <button type="button" class="btn btn-sm btn-outline-light" onclick="limpiarProducto()">Limpiar</button>
+              </div>
+            </form>
+            <div class="table-responsive">
+              <table class="table table-dark table-striped table-sm align-middle">
+                <thead><tr><th>ID</th><th>Producto</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr></thead>
+                <tbody id="tbodyProductos"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- VENTAS EN VIVO (SINCRONIZADAS DESDE ANDROID Y WEB) -->
+          <div class="tab-pane fade" id="cat-ventas">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h4 class="mb-0">Historial de Ventas en Tiempo Real (MySQL Azure)</h4>
+              <button class="btn btn-sm btn-outline-warning" onclick="cargarVentas()">Actualizar tabla</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-dark table-striped table-sm align-middle">
+                <thead><tr><th>Folio</th><th>Sucursal</th><th>Tipo</th><th>Fecha</th><th>Total</th><th>Estado</th></tr></thead>
+                <tbody id="tbodyVentas"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <footer class="pie-pagina">
         <div class="container pie-contenido">
 

@@ -20,12 +20,13 @@ import com.example.aperture.dao.ProductoDao;
 import com.example.aperture.dao.SucursalDao;
 import com.example.aperture.dao.VentaDao;
 import com.example.aperture.database.DatabaseHelper;
+import com.example.aperture.network.ApiSyncClient;
+import com.example.aperture.service.DulceriaService;
 import com.example.aperture.model.Combo;
 import com.example.aperture.model.Existencia;
 import com.example.aperture.model.Producto;
 import com.example.aperture.model.Sucursal;
-import com.example.aperture.model.Venta;
-import com.example.aperture.utils.FechaUtils;
+
 import java.util.ArrayList;
 
 public class DulceriaFragment extends Fragment {
@@ -35,12 +36,17 @@ public class DulceriaFragment extends Fragment {
     private ComboDao comboDao;
     private ExistenciaDao existenciaDao;
     private VentaDao ventaDao;
+    private DulceriaService dulceriaService;
 
     private Spinner spSucursal;
     private Spinner spProducto;
     private Spinner spCombo;
     private EditText etCantidad;
     private ListView lvCatalogo;
+    private ListView lvCarrito;
+    private android.widget.TextView tvTotal;
+    private final ArrayList<ArticuloCarrito> carrito = new ArrayList<>();
+    private final ArrayList<String> carritoTexto = new ArrayList<>();
 
     private ArrayList<Sucursal> listaSucursales;
     private ArrayList<Producto> listaProductos;
@@ -53,6 +59,7 @@ public class DulceriaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_dulceria, container, false);
 
         DatabaseHelper dbHelper = new DatabaseHelper(requireContext());
+        dulceriaService = new DulceriaService(dbHelper);
         sucursalDao = new SucursalDao(dbHelper);
         productoDao = new ProductoDao(dbHelper);
         comboDao = new ComboDao(dbHelper);
@@ -66,12 +73,28 @@ public class DulceriaFragment extends Fragment {
         Button btnVenderProducto = view.findViewById(R.id.btnVenderProducto);
         Button btnVenderCombo = view.findViewById(R.id.btnVenderCombo);
         lvCatalogo = view.findViewById(R.id.lvDulceriaCatalogo);
+        lvCarrito = view.findViewById(R.id.lvCarritoDulceria);
+        tvTotal = view.findViewById(R.id.tvTotalCarrito);
+        Button btnQuitar = view.findViewById(R.id.btnQuitarCarrito);
+        Button btnRegistrar = view.findViewById(R.id.btnRegistrarVentaDulceria);
 
         cargarSpinners();
         cargarListaCatalogo();
+        spSucursal.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, View selectedView,
+                                       int position, long id) {
+                cargarListaCatalogo();
+            }
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) { }
+        });
 
-        btnVenderProducto.setOnClickListener(v -> venderProducto());
-        btnVenderCombo.setOnClickListener(v -> venderCombo());
+        btnVenderProducto.setOnClickListener(v -> agregarProducto());
+        btnVenderCombo.setOnClickListener(v -> agregarCombo());
+        btnQuitar.setOnClickListener(v -> quitarDelCarrito());
+        btnRegistrar.setOnClickListener(v -> registrarVenta());
+        actualizarCarrito();
 
         return view;
     }
@@ -112,64 +135,140 @@ public class DulceriaFragment extends Fragment {
         }
     }
 
-    private void venderProducto() {
-        if (listaSucursales.isEmpty() || listaProductos.isEmpty()) return;
+    private int leerCantidad() {
+        String texto = etCantidad.getText().toString().trim();
+        if (texto.isEmpty()) return 1;
+        try {
+            int cantidad = Integer.parseInt(texto);
+            if (cantidad > 0) return cantidad;
+        } catch (NumberFormatException ignored) { }
+        Toast.makeText(requireContext(), "La cantidad debe ser un número mayor que cero.", Toast.LENGTH_SHORT).show();
+        return -1;
+    }
 
-        Sucursal sucursal = listaSucursales.get(spSucursal.getSelectedItemPosition());
-        Producto producto = listaProductos.get(spProducto.getSelectedItemPosition());
-        int cantidad = obtenerCantidad();
-        double total = producto.getPrecio() * cantidad;
-
-        long idVenta = ventaDao.insertar(new Venta(
-                0,
-                sucursal.getIdSucursal(),
-                FechaUtils.obtenerFechaHoraActual(),
-                total,
-                "Completada"
-        ));
-
-        Existencia ex = existenciaDao.obtenerPorSucursalYProducto(
-                sucursal.getIdSucursal(), producto.getIdProducto());
-        if (ex != null) {
-            int nuevoStock = Math.max(0, ex.getCantidad() - cantidad);
-            existenciaDao.actualizarCantidad(ex.getIdExistencia(), nuevoStock);
+    private void agregarProducto() {
+        if (listaProductos == null || listaProductos.isEmpty() || spProducto.getSelectedItemPosition() < 0) {
+            Toast.makeText(requireContext(), "No hay productos disponibles.", Toast.LENGTH_SHORT).show();
+            return;
         }
+        int cantidad = leerCantidad();
+        if (cantidad <= 0) return;
+        Producto p = listaProductos.get(spProducto.getSelectedItemPosition());
+        agregarAlCarrito("PRODUCTO", p.getIdProducto(), p.getNombre(), p.getPrecio(), cantidad);
+    }
 
-        if (idVenta > 0) {
-            Toast.makeText(requireContext(),
-                    "Venta de " + cantidad + "x " + producto.getNombre() + " ($" + total + ")",
-                    Toast.LENGTH_SHORT).show();
+    private void agregarCombo() {
+        if (listaCombos == null || listaCombos.isEmpty() || spCombo.getSelectedItemPosition() < 0) {
+            Toast.makeText(requireContext(), "No hay combos disponibles.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        int cantidad = leerCantidad();
+        if (cantidad <= 0) return;
+        Combo c = listaCombos.get(spCombo.getSelectedItemPosition());
+        agregarAlCarrito("COMBO", c.getIdCombo(), c.getNombre(), c.getPrecio(), cantidad);
+    }
+
+    private void agregarAlCarrito(String tipo, int id, String nombre, double precio, int cantidad) {
+        for (ArticuloCarrito articulo : carrito) {
+            if (articulo.id == id && articulo.tipo.equals(tipo)) {
+                articulo.cantidad += cantidad;
+                actualizarCarrito();
+                etCantidad.setText("1");
+                return;
+            }
+        }
+        carrito.add(new ArticuloCarrito(tipo, id, nombre, precio, cantidad));
+        actualizarCarrito();
+        etCantidad.setText("1");
+    }
+
+    private void quitarDelCarrito() {
+        int posicion = lvCarrito.getCheckedItemPosition();
+        if (posicion < 0 || posicion >= carrito.size()) {
+            Toast.makeText(requireContext(), "Selecciona un artículo del carrito.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        carrito.remove(posicion);
+        lvCarrito.clearChoices();
+        actualizarCarrito();
+    }
+
+    private void actualizarCarrito() {
+        carritoTexto.clear();
+        double total = 0.0;
+        for (ArticuloCarrito articulo : carrito) {
+            double subtotal = articulo.precio * articulo.cantidad;
+            total += subtotal;
+            String tipo = "PRODUCTO".equals(articulo.tipo) ? "Producto" : "Combo";
+            carritoTexto.add(tipo + ": " + articulo.nombre + "\nCantidad: " + articulo.cantidad
+                    + " | Subtotal: $" + String.format(java.util.Locale.getDefault(), "%.2f", subtotal));
+        }
+        lvCarrito.setAdapter(new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_list_item_single_choice, carritoTexto));
+        lvCarrito.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        tvTotal.setText("Total: $" + String.format(java.util.Locale.getDefault(), "%.2f", total));
+    }
+
+    private void registrarVenta() {
+        if (listaSucursales == null || listaSucursales.isEmpty() || spSucursal.getSelectedItemPosition() < 0) {
+            Toast.makeText(requireContext(), "Selecciona una sucursal.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (carrito.isEmpty()) {
+            Toast.makeText(requireContext(), "Agrega al menos un artículo.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Sucursal sucursal = listaSucursales.get(spSucursal.getSelectedItemPosition());
+        ArrayList<DulceriaService.ArticuloSolicitud> solicitudes = new ArrayList<>();
+        for (ArticuloCarrito articulo : carrito) {
+            solicitudes.add(new DulceriaService.ArticuloSolicitud(articulo.tipo, articulo.id, articulo.cantidad));
+        }
+        try {
+            long folio = dulceriaService.registrarVentaDulceria(sucursal.getIdSucursal(), solicitudes);
+            ArrayList<org.json.JSONObject> itemsJson = new ArrayList<>();
+            for (ArticuloCarrito art : carrito) {
+                org.json.JSONObject obj = new org.json.JSONObject();
+                obj.put("tipo", art.tipo);
+                obj.put("idArticulo", art.id);
+                obj.put("cantidad", art.cantidad);
+                itemsJson.add(obj);
+            }
+            ApiSyncClient.sincronizarVentaDulceria(sucursal.getIdSucursal(), itemsJson);
+            Toast.makeText(requireContext(), "Venta registrada correctamente. Folio: " + folio,
+                    Toast.LENGTH_LONG).show();
+            carrito.clear();
+            actualizarCarrito();
             cargarListaCatalogo();
+        } catch (Exception e) {
+            Toast.makeText(requireContext(), "No se pudo completar la venta: " + e.getMessage(),
+                    Toast.LENGTH_LONG).show();
         }
     }
 
-    private void venderCombo() {
-        if (listaSucursales.isEmpty() || listaCombos.isEmpty()) return;
-
-        Sucursal sucursal = listaSucursales.get(spSucursal.getSelectedItemPosition());
-        Combo combo = listaCombos.get(spCombo.getSelectedItemPosition());
-        int cantidad = obtenerCantidad();
-        double total = combo.getPrecio() * cantidad;
-
-        long idVenta = ventaDao.insertar(new Venta(
-                0,
-                sucursal.getIdSucursal(),
-                FechaUtils.obtenerFechaHoraActual(),
-                total,
-                "Completada"
-        ));
-
-        if (idVenta > 0) {
-            Toast.makeText(requireContext(),
-                    "Venta de " + cantidad + "x " + combo.getNombre() + " ($" + total + ")",
-                    Toast.LENGTH_SHORT).show();
-            cargarListaCatalogo();
+    private static class ArticuloCarrito {
+        final String tipo;
+        final int id;
+        final String nombre;
+        final double precio;
+        int cantidad;
+        ArticuloCarrito(String tipo, int id, String nombre, double precio, int cantidad) {
+            this.tipo = tipo;
+            this.id = id;
+            this.nombre = nombre;
+            this.precio = precio;
+            this.cantidad = cantidad;
         }
     }
 
     private void cargarListaCatalogo() {
         ArrayList<String> items = new ArrayList<>();
-        int idSuc = listaSucursales.isEmpty() ? 1 : listaSucursales.get(0).getIdSucursal();
+        int posicionSucursal = spSucursal.getSelectedItemPosition();
+        if (listaSucursales.isEmpty() || posicionSucursal < 0 || posicionSucursal >= listaSucursales.size()) {
+            lvCatalogo.setAdapter(new ArrayAdapter<>(requireContext(),
+                    android.R.layout.simple_list_item_1, items));
+            return;
+        }
+        int idSuc = listaSucursales.get(posicionSucursal).getIdSucursal();
 
         for (Producto p : productoDao.obtenerActivos()) {
             Existencia ex = existenciaDao.obtenerPorSucursalYProducto(idSuc, p.getIdProducto());

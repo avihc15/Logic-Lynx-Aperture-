@@ -18,11 +18,19 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp" />
 
-    <Spinner
-        android:id="@+id/spTaquillaAsiento"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp" />
+        android:text="Asientos (puedes seleccionar varios)"
+        android:textStyle="bold"
+        android:layout_marginTop="6dp" />
+
+    <ListView
+        android:id="@+id/lvTaquillaAsientos"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:choiceMode="multipleChoice"
+        android:dividerHeight="1dp" />
 
     <Spinner
         android:id="@+id/spTaquillaTarifa"

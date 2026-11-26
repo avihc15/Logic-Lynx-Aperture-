@@ -2,66 +2,29 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/aperture_background"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:background="@color/aperture_background"
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/txtNombreModulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
-        android:text="Nombre del módulo"
         android:textColor="@color/aperture_primary"
-        android:textSize="29sp"
-        android:textStyle="bold" />
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:paddingBottom="4dp" />
 
     <TextView
         android:id="@+id/txtDescripcionModulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="35dp"
-        android:text="Descripción del módulo"
-        android:textColor="#E08E13"
-        android:textSize="16sp" />
+        android:textColor="@color/aperture_text_secondary"
+        android:textSize="14sp"
+        android:paddingBottom="12dp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#E7AF67"
-        android:orientation="vertical"
-        android:padding="20dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Operaciones"
-            android:textColor="@color/aperture_text"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="20dp" />
-
-        <Button
-            android:id="@+id/btnRegistrar"
-            android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:layout_marginBottom="12dp"
-            android:backgroundTint="@color/aperture_primary"
-            android:text="accion registrar"
-            android:textColor="@color/aperture_text" />
-
-        <Button
-            android:id="@+id/btnConsultar"
-            android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:backgroundTint="#D5851B"
-            android:text="accion consultar"
-            android:textColor="@color/aperture_background" />
-
-    </LinearLayout>
-
-    <View
+    <FrameLayout
+        android:id="@+id/contenedorModulo"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
@@ -69,9 +32,8 @@
     <Button
         android:id="@+id/btnRegresar"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:backgroundTint="#C3741D"
-        android:text="accion_regresar"
+        android:layout_height="wrap_content"
+        android:text="Regresar al menú"
+        android:backgroundTint="@color/aperture_surface"
         android:textColor="@color/aperture_text" />
-
 </LinearLayout>

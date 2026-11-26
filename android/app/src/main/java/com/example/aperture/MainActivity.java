@@ -4,10 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.aperture.ui.dulceria.DulceriaFragment;
-import com.example.aperture.ui.funciones.FuncionesFragment;
-import com.example.aperture.ui.promociones.PromocionesFragment;
-import com.example.aperture.ui.taquilla.TaquillaFragment;
+import com.example.aperture.ui.ModuloActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,15 +19,22 @@ public class MainActivity extends AppCompatActivity {
         Button btnFuncion = findViewById(R.id.btnFuncion);
 
         btnTaquilla.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, TaquillaFragment.class)));
+                abrirModulo("Taquilla", "Venta y consulta de boletos."));
 
         btnPromocion.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, PromocionesFragment.class)));
+                abrirModulo("Promoción", "Administración de promociones."));
 
         btnDulceria.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, DulceriaFragment.class)));
+                abrirModulo("Dulcería", "Venta de productos y combos."));
 
         btnFuncion.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, FuncionesFragment.class)));
+                abrirModulo("Función", "Administración de películas, carteleras y funciones."));
+    }
+
+    private void abrirModulo(String nombre, String descripcion) {
+        Intent intent = new Intent(MainActivity.this, ModuloActivity.class);
+        intent.putExtra("nombre_modulo", nombre);
+        intent.putExtra("descripcion_modulo", descripcion);
+        startActivity(intent);
     }
 }
