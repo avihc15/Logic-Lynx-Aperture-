@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/aperture_background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/txtLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="@string/inicio_titulo"
+            android:textColor="@color/aperture_primary"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.12" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/inicio_subtitulo"
+            android:textColor="@color/aperture_text_secondary"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="55dp"
+            android:text="@string/inicio_bienvenida"
+            android:textColor="@color/aperture_text"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:text="@string/inicio_instruccion"
+            android:textColor="@color/aperture_text_secondary"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btnTaquilla"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginBottom="14dp"
+            android:backgroundTint="@color/aperture_primary"
+            android:text="@string/modulo_taquilla"
+            android:textColor="@color/aperture_text"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnPromocion"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginBottom="14dp"
+            android:backgroundTint="@color/aperture_primary"
+            android:text="@string/modulo_promocion"
+            android:textColor="@color/aperture_text"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnDulceria"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginBottom="14dp"
+            android:backgroundTint="@color/aperture_primary"
+            android:text="@string/modulo_dulceria"
+            android:textColor="@color/aperture_text"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnFuncion"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginBottom="35dp"
+            android:backgroundTint="@color/aperture_primary"
+            android:text="@string/modulo_funcion"
+            android:textColor="@color/aperture_text"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</ScrollView>

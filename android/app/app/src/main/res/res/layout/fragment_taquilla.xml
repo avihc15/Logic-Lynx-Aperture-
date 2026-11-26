@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Venta de Boletos - Taquilla"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <Spinner
+        android:id="@+id/spTaquillaFuncion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Asientos (puedes seleccionar varios)"
+        android:textStyle="bold"
+        android:layout_marginTop="6dp" />
+
+    <ListView
+        android:id="@+id/lvTaquillaAsientos"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:choiceMode="multipleChoice"
+        android:dividerHeight="1dp" />
+
+    <Spinner
+        android:id="@+id/spTaquillaTarifa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp" />
+
+    <Spinner
+        android:id="@+id/spTaquillaPromocion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp" />
+
+    <TextView
+        android:id="@+id/tvTaquillaPrecioFinal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="Total a pagar: $0.00"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnVenderBoleto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Vender Boleto" />
+
+    <ListView
+        android:id="@+id/lvBoletosVendidos"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="8dp" />
+
+</LinearLayout>

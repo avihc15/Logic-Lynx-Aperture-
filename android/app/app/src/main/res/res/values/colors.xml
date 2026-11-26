@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#1E293B</color>
+    <color name="primary_dark">#0F172A</color>
+    <color name="accent">#C11A3E</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="aperture_background">#10131C</color>
+    <color name="aperture_surface">#1B2130</color>
+    <color name="aperture_primary">#6C63FF</color>
+    <color name="aperture_primary_dark">#5148D8</color>
+    <color name="aperture_accent">#00C2A8</color>
+    <color name="aperture_text">#FFFFFF</color>
+    <color name="aperture_text_secondary">#B8BDCC</color>
+    <color name="aperture_border">#343B4D</color>
+</resources>
