@@ -18,7 +18,7 @@ public class ApiSyncClient {
     private static final String TAG = "ApertureApiSync";
     // 10.0.2.2 apunta al localhost de tu PC desde el emulador Android.
     // Para Azure en vivo, cambia a: "http://TU_IP_PUBLICA_AZURE:8080/api"
-    public static String BASE_URL = "http://10.0.2.2:8080/api";
+    public static String BASE_URL = "http://68.211.179.58:8080/api";
 
     private static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
